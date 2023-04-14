@@ -1,30 +1,33 @@
 package ru.vsu.cs.simplestorehouse.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.vsu.cs.simplestorehouse.entity.Query;
+import ru.vsu.cs.simplestorehouse.dto.QueryDto;
+import ru.vsu.cs.simplestorehouse.mapper.QueryMapper;
 import ru.vsu.cs.simplestorehouse.repository.QueryRepository;
 import ru.vsu.cs.simplestorehouse.utils.exceptions.QueryNotFoundException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class QueryService {
     private final QueryRepository queryRepository;
+    private final QueryMapper queryMapper;
 
-    public QueryService(QueryRepository queryRepository) {
+    public QueryService(QueryRepository queryRepository, QueryMapper queryMapper) {
         this.queryRepository = queryRepository;
+        this.queryMapper = queryMapper;
     }
 
-    public List<Query> getQueries() {
-        return queryRepository.findAll();
+    public List<QueryDto> getQueries() {
+        return queryRepository.findAll().stream().map(queryMapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional
-    public void addQuery(Query query) {
-        queryRepository.save(query);
+    public void addQuery(QueryDto queryDto) {
+        queryRepository.save(queryMapper.toEntity(queryDto));
     }
 
     @Transactional
@@ -32,8 +35,8 @@ public class QueryService {
         queryRepository.deleteAll();
     }
 
-    public Query getQuery(Integer id) {
-        return queryRepository.findById(id).orElseThrow(QueryNotFoundException::new);
+    public QueryDto getQuery(Integer id) {
+        return queryRepository.findById(id).map(queryMapper::toDto).orElseThrow(QueryNotFoundException::new);
     }
 
     @Transactional
