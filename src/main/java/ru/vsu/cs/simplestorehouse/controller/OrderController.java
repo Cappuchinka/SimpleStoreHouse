@@ -26,7 +26,7 @@ public class OrderController {
         return orderService.getOrder(id);
     }
 
-    @PostMapping("order/new")
+    @PostMapping("/order/new")
     public void addOrder(@RequestBody OrderDto orderDto) {
         orderService.addOrder(orderDto);
     }
@@ -36,7 +36,7 @@ public class OrderController {
         orderService.clear();
     }
 
-    @DeleteMapping("order/delete")
+    @DeleteMapping("/order/delete")
     public void delete(@RequestBody Integer id) {
         orderService.delete(id);
     }
