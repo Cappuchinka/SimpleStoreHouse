@@ -25,9 +25,14 @@ public class StoreController {
         storeService.addStore(storeDto);
     }
 
-    @PostMapping("/store/id")
-    public StoreDto getStoreById(@RequestBody Integer id) {
+    @PostMapping("/store/{id}")
+    public StoreDto getStoreById(@PathVariable Integer id) {
         return storeService.getStore(id);
+    }
+
+    @PutMapping("/store/update/{id}")
+    public void updateStore(@PathVariable Integer id, @RequestBody StoreDto storeDto) {
+        storeService.updateStore(id, storeDto);
     }
 
     @DeleteMapping("/clear")
@@ -35,8 +40,8 @@ public class StoreController {
         storeService.clear();
     }
 
-    @DeleteMapping("/store/delete")
-    public void delete(@RequestBody Integer id) {
+    @DeleteMapping("/store/delete/{id}")
+    public void delete(@PathVariable Integer id) {
         storeService.delete(id);
     }
 }

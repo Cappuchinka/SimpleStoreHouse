@@ -25,9 +25,14 @@ public class OrderProductController {
         orderProductService.addOrderProduct(orderProductDto);
     }
 
-    @PostMapping("/order_product/id")
+    @PostMapping("/order_product/{id}")
     public OrderProductDto getOrderProductById(@RequestBody Integer id) {
         return orderProductService.getOrderProduct(id);
+    }
+
+    @PutMapping("/order_product/update/{id}")
+    public void updateOrderProduct(@PathVariable Integer id, @RequestBody OrderProductDto orderProductDto) {
+        orderProductService.updateOrderProduct(id, orderProductDto);
     }
 
     @DeleteMapping("/clear")
@@ -35,7 +40,7 @@ public class OrderProductController {
         orderProductService.clear();
     }
 
-    @DeleteMapping("order_product/delete")
+    @DeleteMapping("order_product/delete/{id}")
     public void delete(@RequestBody Integer id) {
         orderProductService.delete(id);
     }

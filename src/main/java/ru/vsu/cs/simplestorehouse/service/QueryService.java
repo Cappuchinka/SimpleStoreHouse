@@ -2,10 +2,14 @@ package ru.vsu.cs.simplestorehouse.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.vsu.cs.simplestorehouse.dto.OrderProductDto;
 import ru.vsu.cs.simplestorehouse.dto.QueryDto;
+import ru.vsu.cs.simplestorehouse.entity.OrderProduct;
+import ru.vsu.cs.simplestorehouse.entity.Query;
 import ru.vsu.cs.simplestorehouse.mapper.QueryMapper;
 import ru.vsu.cs.simplestorehouse.repository.QueryRepository;
 import ru.vsu.cs.simplestorehouse.utils.exceptions.QueryNotFoundException;
+import ru.vsu.cs.simplestorehouse.utils.exceptions.StoreNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +41,14 @@ public class QueryService {
 
     public QueryDto getQuery(Integer id) {
         return queryRepository.findById(id).map(queryMapper::toDto).orElseThrow(QueryNotFoundException::new);
+    }
+
+    @Transactional
+    public void updateQuery(Integer id, QueryDto queryDto) {
+        Query oldOrderProduct = queryRepository.findById(id).orElseThrow(QueryNotFoundException::new);;
+        Query newOrderProduct = queryMapper.toEntity(queryDto);
+        newOrderProduct.setId(oldOrderProduct.getId());
+        queryRepository.save(newOrderProduct);
     }
 
     @Transactional

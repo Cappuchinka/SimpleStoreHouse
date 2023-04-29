@@ -3,13 +3,16 @@ package ru.vsu.cs.simplestorehouse.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.vsu.cs.simplestorehouse.dto.OrderProductDto;
 import ru.vsu.cs.simplestorehouse.dto.ProductDto;
 import ru.vsu.cs.simplestorehouse.entity.Order;
+import ru.vsu.cs.simplestorehouse.entity.OrderProduct;
 import ru.vsu.cs.simplestorehouse.entity.Product;
 import ru.vsu.cs.simplestorehouse.mapper.ProductMapper;
 import ru.vsu.cs.simplestorehouse.repository.OrderRepository;
 import ru.vsu.cs.simplestorehouse.repository.ProductRepository;
 import ru.vsu.cs.simplestorehouse.utils.exceptions.ProductNotFoundException;
+import ru.vsu.cs.simplestorehouse.utils.exceptions.StoreNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +44,14 @@ public class ProductService {
 
     public ProductDto getProduct(Integer id) {
         return productRepository.findById(id).map(productMapper::toDto).orElseThrow(ProductNotFoundException::new);
+    }
+
+    @Transactional
+    public void updateProduct(Integer id, ProductDto productDto) {
+        Product oldOrderProduct = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);;
+        Product newOrderProduct = productMapper.toEntity(productDto);
+        newOrderProduct.setId(oldOrderProduct.getId());
+        productRepository.save(newOrderProduct);
     }
 
     @Transactional

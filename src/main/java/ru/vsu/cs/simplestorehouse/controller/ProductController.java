@@ -1,6 +1,7 @@
 package ru.vsu.cs.simplestorehouse.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.vsu.cs.simplestorehouse.dto.OrderProductDto;
 import ru.vsu.cs.simplestorehouse.dto.ProductDto;
 import ru.vsu.cs.simplestorehouse.service.ProductService;
 
@@ -20,7 +21,7 @@ public class ProductController {
         return productService.getProducts();
     }
 
-    @PostMapping("/product/id")
+    @PostMapping("/product/{id}")
     public ProductDto getProductById(@RequestBody Integer id) {
         return productService.getProduct(id);
     }
@@ -30,7 +31,12 @@ public class ProductController {
         productService.addProduct(productDto);
     }
 
-    @DeleteMapping("/product/delete")
+    @PutMapping("/product/update/{id}")
+    public void updateProduct(@PathVariable Integer id, @RequestBody ProductDto productDto) {
+        productService.updateProduct(id, productDto);
+    }
+
+    @DeleteMapping("/product/delete/{id}")
     public void delete(@RequestBody Integer id) {
         productService.delete(id);
     }

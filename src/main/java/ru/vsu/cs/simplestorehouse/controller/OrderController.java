@@ -2,6 +2,7 @@ package ru.vsu.cs.simplestorehouse.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.simplestorehouse.dto.OrderDto;
+import ru.vsu.cs.simplestorehouse.dto.OrderProductDto;
 import ru.vsu.cs.simplestorehouse.service.OrderService;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class OrderController {
         return orderService.getOrders();
     }
 
-    @PostMapping("/order/id")
+    @PostMapping("/order/{id}")
     public OrderDto getOrderById(@RequestBody Integer id) {
         return orderService.getOrder(id);
     }
@@ -31,12 +32,17 @@ public class OrderController {
         orderService.addOrder(orderDto);
     }
 
+    @PutMapping("/order/update/{id}")
+    public void updateOrder(@PathVariable Integer id, @RequestBody OrderDto orderDto) {
+        orderService.updateOrder(id, orderDto);
+    }
+
     @DeleteMapping("/clear")
     public void clear() {
         orderService.clear();
     }
 
-    @DeleteMapping("/order/delete")
+    @DeleteMapping("/order/delete/{id}")
     public void delete(@RequestBody Integer id) {
         orderService.delete(id);
     }

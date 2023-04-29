@@ -7,6 +7,7 @@ import ru.vsu.cs.simplestorehouse.entity.OrderProduct;
 import ru.vsu.cs.simplestorehouse.mapper.OrderProductMapper;
 import ru.vsu.cs.simplestorehouse.repository.OrderProductRepository;
 import ru.vsu.cs.simplestorehouse.utils.exceptions.OrderProductNotFoundException;
+import ru.vsu.cs.simplestorehouse.utils.exceptions.StoreNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +39,14 @@ public class OrderProductService {
 
     public OrderProductDto getOrderProduct(Integer id) {
         return orderProductRepository.findById(id).map(orderProductMapper::toDto).orElseThrow(OrderProductNotFoundException::new);
+    }
+
+    @Transactional
+    public void updateOrderProduct(Integer id, OrderProductDto orderProductDto) {
+        OrderProduct oldOrderProduct = orderProductRepository.findById(id).orElseThrow(OrderProductNotFoundException::new);;
+        OrderProduct newOrderProduct = orderProductMapper.toEntity(orderProductDto);
+        newOrderProduct.setId(oldOrderProduct.getId());
+        orderProductRepository.save(newOrderProduct);
     }
 
     @Transactional

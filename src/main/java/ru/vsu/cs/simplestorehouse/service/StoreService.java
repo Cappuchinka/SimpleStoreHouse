@@ -41,6 +41,14 @@ public class StoreService {
     }
 
     @Transactional
+    public void updateStore(Integer id, StoreDto storeDto) {
+        Store oldStore = storeRepository.findById(id).orElseThrow(StoreNotFoundException::new);
+        Store newStore = storeMapper.toEntity(storeDto);
+        newStore.setId(oldStore.getId());
+        storeRepository.save(newStore);
+    }
+
+    @Transactional
     public void delete(Integer id) {
         storeRepository.deleteById(id);
     }
