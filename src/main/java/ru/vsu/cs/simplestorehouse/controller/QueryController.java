@@ -1,10 +1,16 @@
 package ru.vsu.cs.simplestorehouse.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.vsu.cs.simplestorehouse.dto.OrderProductDto;
 import ru.vsu.cs.simplestorehouse.dto.QueryDto;
 import ru.vsu.cs.simplestorehouse.service.QueryService;
+import ru.vsu.cs.simplestorehouse.utils.ErrorResponse;
+import ru.vsu.cs.simplestorehouse.utils.exceptions.QueryNotFoundException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -27,22 +33,41 @@ public class QueryController {
     }
 
     @PostMapping("/query/new")
-    public void addQuery(@RequestBody QueryDto queryDto) {
+    public ResponseEntity<HttpStatus> addQuery(@RequestBody @Valid QueryDto queryDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST);
+        }
         queryService.addQuery(queryDto);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PutMapping("/query/update/{id}")
-    public void updateQuery(@PathVariable Integer id, @RequestBody QueryDto queryDto) {
+    public ResponseEntity<HttpStatus> updateQuery(@PathVariable Integer id, @RequestBody @Valid QueryDto queryDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST);
+        }
         queryService.updateQuery(id, queryDto);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/clear")
-    public void clear() {
+    public ResponseEntity<HttpStatus> clear() {
         queryService.clear();
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/query/delete/{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable Integer id) {
         queryService.delete(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleException(QueryNotFoundException ex) {
+        ErrorResponse response = new ErrorResponse(
+                "Query not found",
+                LocalDate.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
