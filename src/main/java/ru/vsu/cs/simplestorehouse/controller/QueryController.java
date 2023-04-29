@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.cs.simplestorehouse.dto.QueryDto;
+import ru.vsu.cs.simplestorehouse.dto.QueryPostDto;
 import ru.vsu.cs.simplestorehouse.service.QueryService;
 import ru.vsu.cs.simplestorehouse.utils.ErrorResponse;
 import ru.vsu.cs.simplestorehouse.utils.exceptions.QueryNotFoundException;
@@ -33,11 +34,11 @@ public class QueryController {
     }
 
     @PostMapping("/query/new")
-    public ResponseEntity<HttpStatus> addQuery(@RequestBody @Valid QueryDto queryDto, BindingResult bindingResult) {
+    public ResponseEntity<HttpStatus> addQuery(@RequestBody @Valid QueryPostDto queryPostDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(HttpStatus.BAD_REQUEST);
         }
-        queryService.addQuery(queryDto);
+        queryService.addQuery(queryPostDto);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

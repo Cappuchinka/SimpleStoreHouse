@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class QueryDto {
+public class QueryPostDto {
     @NotNull
-    private ProductDto product;
+    private String productName;
 
     @NotNull
     private Integer count;

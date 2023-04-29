@@ -2,14 +2,14 @@ package ru.vsu.cs.simplestorehouse.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.vsu.cs.simplestorehouse.dto.OrderProductDto;
 import ru.vsu.cs.simplestorehouse.dto.QueryDto;
-import ru.vsu.cs.simplestorehouse.entity.OrderProduct;
+import ru.vsu.cs.simplestorehouse.dto.QueryPostDto;
+import ru.vsu.cs.simplestorehouse.entity.Product;
 import ru.vsu.cs.simplestorehouse.entity.Query;
+import ru.vsu.cs.simplestorehouse.mapper.ProductMapper;
 import ru.vsu.cs.simplestorehouse.mapper.QueryMapper;
 import ru.vsu.cs.simplestorehouse.repository.QueryRepository;
 import ru.vsu.cs.simplestorehouse.utils.exceptions.QueryNotFoundException;
-import ru.vsu.cs.simplestorehouse.utils.exceptions.StoreNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +20,12 @@ public class QueryService {
     private final QueryRepository queryRepository;
     private final QueryMapper queryMapper;
 
-    public QueryService(QueryRepository queryRepository, QueryMapper queryMapper) {
+    private final ProductMapper productMapper;
+
+    public QueryService(QueryRepository queryRepository, QueryMapper queryMapper, ProductMapper productMapper) {
         this.queryRepository = queryRepository;
         this.queryMapper = queryMapper;
+        this.productMapper = productMapper;
     }
 
     public List<QueryDto> getQueries() {
@@ -30,8 +33,14 @@ public class QueryService {
     }
 
     @Transactional
-    public void addQuery(QueryDto queryDto) {
-        queryRepository.save(queryMapper.toEntity(queryDto));
+    public void addQuery(QueryPostDto queryPostDto) {
+        Product product = queryRepository.findProductByName(queryPostDto.getProductName());
+        QueryDto queryDto = new QueryDto();
+        queryDto.setProduct(productMapper.toDto(product));
+        queryDto.setProvider(queryPostDto.getProvider());
+        queryDto.setCount(queryPostDto.getCount());
+        Query query = queryMapper.toEntity(queryDto);
+        queryRepository.save(query);
     }
 
     @Transactional

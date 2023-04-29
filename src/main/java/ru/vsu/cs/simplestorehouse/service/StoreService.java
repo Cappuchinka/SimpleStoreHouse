@@ -28,7 +28,8 @@ public class StoreService {
 
     @Transactional
     public void addStore(StoreDto storeDto) {
-        storeRepository.save(storeMapper.toEntity(storeDto));
+        Store store = storeMapper.toEntity(storeDto);
+        storeRepository.save(store);
     }
 
     @Transactional
